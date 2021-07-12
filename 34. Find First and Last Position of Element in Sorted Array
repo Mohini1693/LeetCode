@@ -1,0 +1,50 @@
+//Runtime: 224 ms, faster than 99.89% of C# online submissions for Find First and Last Position of Element in Sorted Array.
+//Memory Usage: 35.8 MB, less than 7.01% of C# online submissions for Find First and Last Position of Element in Sorted Array.
+//C# Solution - 12/07/2021
+
+public class Solution {
+    public int[] SearchRange(int[] nums, int target) {
+      return ReturnIndexes(nums,0,nums.Count()-1,target);   
+    }
+    
+    int[] ReturnIndexes(int[] nums, int s, int e, int key)
+    {
+        if(s > e)
+            return new int[2]{-1,-1};    //Return [-1,-1] if no record found
+        
+        int mid = e-s/2 + s;
+        
+        if(nums[mid] == key) 
+        {
+            int[] result = new int[2]{mid,mid};   //initialize result array with mid positions.
+            int i = 0;
+            while(mid-i >= 0 && nums[mid-i] == key) //check if target is available for any positions lesser than mid-1 and store at result[0] position.
+            {
+                result[0] = mid-i;
+                i++;
+            }
+            
+            i = 0;
+            while(mid+i <= e && nums[mid+i] == key)  //check if target is available for any positions greater than mid+1 and store result at result[1] position.
+            {
+                result[1] = mid+i;
+                i++;
+            }
+           
+            return result;
+        }
+        
+        if(nums[mid] >= nums[s])
+        {
+            if(key >= nums[s] && key < nums[mid])
+                return ReturnIndexes(nums,s,mid-1,key); //Keep searching in first half
+            return ReturnIndexes(nums,mid+1,e,key);  //Keep searching in second half
+        }
+        
+        if(key > nums[mid] && key <= nums[e])
+        {
+            return ReturnIndexes(nums,mid+1,e,key);  //Keep searching in second half
+        }
+        return ReturnIndexes(nums,s,mid-1,key);  //Keep searching in first half
+    }
+}
